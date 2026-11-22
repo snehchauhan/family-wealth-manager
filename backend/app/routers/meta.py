@@ -40,7 +40,7 @@ def available_years():
                     vals.append(int(v["y"]))
         this_year = _date.today().year
         lo = min(vals + [this_year - 4])
-        hi = max(vals + [this_year + 5])
+        hi = max(vals + [2100])
     return {"years": list(range(lo, hi + 1))}
 
 @router.post("/members")
