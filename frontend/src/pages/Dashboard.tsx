@@ -4,14 +4,14 @@ import {
   PieChart, Pie, Cell, AreaChart, Area, CartesianGrid
 } from 'recharts'
 import { api, DashboardData, MonthSummary } from '../api'
-import { useApp } from '../store'
+import { useApp, YEAR_FALLBACK } from '../store'
 import { Card, StatCard } from '../components/ui'
 import { inr, pct, monthLabel } from '../format'
 
 const COLORS = ['#0ea5e9', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#14b8a6', '#f97316', '#64748b']
 
 export default function Dashboard() {
-  const { memberFilter, changed } = useApp()
+  const { memberFilter, changed, years } = useApp()
   const now = new Date()
   const [year, setYear] = useState<number>(now.getFullYear())
   const [month, setMonth] = useState<number | ''>(now.getMonth() + 1)
@@ -47,7 +47,7 @@ export default function Dashboard() {
           <label className="text-xs text-slate-400 block">Year</label>
           <select value={year} className="mt-1 rounded border border-slate-300 dark:border-slate-600 bg-transparent px-2 py-1.5"
             onChange={e => setYear(Number(e.target.value))}>
-            {Array.from({ length: 7 }, (_, i) => now.getFullYear() - 4 + i).map(y => <option key={y} value={y}>{y}</option>)}
+            {Array.from(new Set([...(years.length ? years : YEAR_FALLBACK()), now.getFullYear()])).sort((a, b) => a - b).map(y => <option key={y} value={y}>{y}</option>)}
           </select>
         </div>
         <div className="text-sm text-slate-400 self-end pb-2">{mLabel} · {data.period.from} → {data.period.to}</div>

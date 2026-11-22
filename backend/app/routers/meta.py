@@ -1,3 +1,5 @@
+from datetime import date as _date
+
 from fastapi import APIRouter, HTTPException
 from ..db import get_db, DEFAULT_INCOME_CATEGORIES, DEFAULT_EXPENSE_CATEGORIES
 from ..helpers import rowdicts
@@ -17,6 +19,29 @@ def bootstrap():
             "default_income_categories": DEFAULT_INCOME_CATEGORIES,
             "default_expense_categories": DEFAULT_EXPENSE_CATEGORIES,
         }
+
+@router.get("/years")
+def available_years():
+    with get_db() as conn:
+        vals: list[int] = []
+        for col, table in (
+            ("date", "transactions"),
+            ("date", "investment_transactions"),
+            ("date", "valuations"),
+            ("opening_date", "accounts"),
+            ("purchase_date", "assets"),
+            ("start_date", "liabilities"),
+            ("start_date", "sip_plans"),
+        ):
+            for v in conn.execute(
+                "SELECT DISTINCT SUBSTR({c}, 1, 4) y FROM {t}".format(c=col, t=table)
+            ):
+                if v["y"] and str(v["y"]).isdigit():
+                    vals.append(int(v["y"]))
+        this_year = _date.today().year
+        lo = min(vals + [this_year - 4])
+        hi = max(vals + [this_year + 5])
+    return {"years": list(range(lo, hi + 1))}
 
 @router.post("/members")
 def add_member(payload: dict):

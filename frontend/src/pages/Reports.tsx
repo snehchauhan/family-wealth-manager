@@ -3,7 +3,7 @@ import { Download, FileSpreadsheet, Printer } from 'lucide-react'
 import { Card, Btn, Table, Field, inputCls } from '../components/ui'
 import { inr } from '../format'
 import { api } from '../api'
-import { useApp } from '../store'
+import { useApp, YEAR_FALLBACK } from '../store'
 
 const REPORTS = [
   { id: 'monthly', label: 'Monthly financial report' },
@@ -17,9 +17,9 @@ const REPORTS = [
 interface YearRow { year: number; income: number; expenses: number; savings: number; savings_rate: number | null; investment_contributions: number; investment_withdrawn: number; investment_gain: number; year_end_net_worth: number }
 
 export default function Reports() {
-  const { memberFilter } = useApp()
+  const { memberFilter, years } = useApp()
   const [year, setYear] = useState(new Date().getFullYear())
-  const years = Array.from({ length: 7 }, (_, i) => new Date().getFullYear() - 5 + i)
+  const yearsRes = Array.from(new Set([...(years.length ? years : YEAR_FALLBACK()), new Date().getFullYear()])).sort((a, b) => a - b)
   const exportCsv = (report: string) => {
     const p = new URLSearchParams({ report })
     p.set('year', String(year))
@@ -40,7 +40,7 @@ export default function Reports() {
         <div className="flex gap-3 items-end flex-wrap">
           <Field label="Year">
             <select className={inputCls} value={year} onChange={e => setYear(Number(e.target.value))}>
-              {years.map(y => <option key={y} value={y}>{y}</option>)}
+              {yearsRes.map(y => <option key={y} value={y}>{y}</option>)}
             </select>
           </Field>
           <div className="flex gap-2 flex-wrap">
