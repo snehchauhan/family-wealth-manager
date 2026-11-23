@@ -32,6 +32,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, [changed])
 
   useEffect(() => {
+    const bump = () => setChanged(c => c + 1)
+    window.addEventListener('focus', bump)
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') bump()
+    })
+    return () => window.removeEventListener('focus', bump)
+  }, [])
+
+  useEffect(() => {
     document.documentElement.classList.toggle('dark', dark)
   }, [dark])
 

@@ -24,16 +24,20 @@ def health():
 _dist = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
                      "frontend", "dist")
 
+_no_cache = {"Cache-Control": "no-store"}
+
 if os.path.isdir(_dist):
-    app.mount("/assets", StaticFiles(directory=os.path.join(_dist, "assets")), name="assets")
+    app.mount("/assets", StaticFiles(directory=os.path.join(_dist, "assets"), html=True), name="assets")
 
     @app.get("/")
     def index():
-        return FileResponse(os.path.join(_dist, "index.html"))
+        return FileResponse(os.path.join(_dist, "index.html"), headers=_no_cache)
 
     @app.get("/{path:path}")
     def spa(path: str):
         full = os.path.join(_dist, path)
         if path and os.path.isfile(full):
-            return FileResponse(full)
-        return FileResponse(os.path.join(_dist, "index.html"))
+            if path.startswith("assets/"):
+                return FileResponse(full)
+            return FileResponse(full, headers=_no_cache)
+        return FileResponse(os.path.join(_dist, "index.html"), headers=_no_cache)
