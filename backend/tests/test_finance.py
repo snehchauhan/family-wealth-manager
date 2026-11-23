@@ -156,3 +156,17 @@ def test_insufficient_data_flagged(client):
     perf = c.get("/api/dashboard/performance").json()
     it = perf["by_investment"][0]
     assert not it["sufficient_data"] or it["contributed"] == 0
+
+
+def test_ytd_follows_selected_year_not_wall_clock(client):
+    c = client
+    acc = _add_account(c, "Y", opening=10000)
+    c.post("/api/transactions", json={"type": "income", "date": "2023-03-15", "amount": 5000,
+                                      "account_id": acc})
+    c.post("/api/transactions", json={"type": "expense", "date": "2023-04-10", "amount": 1200,
+                                      "account_id": acc})
+    d = c.get("/api/dashboard", params={"year": 2023, "month": 4}).json()["totals"]
+    assert d["ytd_income"] == 5000
+    assert d["ytd_expenses"] == 1200
+    m = c.get("/api/dashboard", params={"year": 2023, "month": 3}).json()["totals"]
+    assert m["ytd_income"] == 5000 and m["ytd_expenses"] == 0

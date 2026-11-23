@@ -61,7 +61,7 @@ export default function Dashboard() {
         <StatCard label="Net cash flow" value={inr(t.monthly_cash_flow, true)} tone={Number(t.monthly_cash_flow) >= 0 ? 'green' : 'red'} />
         <StatCard label="Investment contributions" value={inr(t.investment_contributions, true)} tone="blue" />
         <StatCard label="Current investment value" value={inr(t.investment_current_value, true)} tone="blue" sub={`Gain/loss ${inr(t.investment_gain, true)}`} />
-        <StatCard label="Bank & cash" value={inr(t.bank_cash, true)} sub={`YTD income ${inr(t.ytd_income, true)}`} />
+        <StatCard label="Bank & cash" value={inr(t.bank_cash, true)} sub={`YTD ${year} income ${inr(t.ytd_income, true)}`} />
         <StatCard label="Net worth" value={inr(t.net_worth, true)} tone={Number(t.net_worth) >= 0 ? 'green' : 'red'}
           sub={`Assets ${inr(t.total_assets, true)} − Liabilities ${inr(t.total_liabilities, true)}`} />
       </div>

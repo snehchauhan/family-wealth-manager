@@ -10,7 +10,9 @@ transfer, investment transaction, asset, or liability.
 Pick any month (dropdown) or "Whole year", plus the year. All cards, charts and the savings
 rate update instantly: income vs expenses, monthly savings, net worth over time, expense
 category pie, asset allocation pie (by investment type), and net-worth composition lines
-(bank / investments / assets / liabilities). YTD figures follow the current calendar year.
+(bank / investments / assets / liabilities). YTD figures follow the year you are viewing
+(from its 1 January up to the end of the selected period), so historical years are real
+figures — never zero.
 
 ## Transactions
 Filters: type, date range (from/to), free-text search over description/notes/subcategory/

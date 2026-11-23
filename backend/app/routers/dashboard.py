@@ -41,8 +41,10 @@ def dashboard(member_id: int | None = None, year: int | None = None, month: int 
         bank_total = sum(calc.account_balance(conn, a["id"], end) for a in accounts
                          if (not member_id or a["owner_id"] == member_id))
 
-        # YTD figures
-        ytd_start = "%d-01-01" % today.year
+        # YTD figures: from 1 January of the year being viewed (falls back to the
+        # current calendar year only when no year is selected).
+        ytd_year = year if year else int(end[:4])
+        ytd_start = "%d-01-01" % ytd_year
         def ytd(t):
             r = conn.execute(
                 "SELECT COALESCE(SUM(amount),0) s FROM transactions WHERE type=? AND date BETWEEN ? AND ?" + wm,

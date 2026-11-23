@@ -49,6 +49,13 @@ All formulas live in `backend/app/calc.py` and are covered by tests in `backend/
 Roll-up of all 12 monthly summaries (every year is fully populated, even years with no
 activity), plus income/expense category breakdown and year-end net worth.
 
+## YTD figures (dashboard)
+YTD income / expenses / contributions are summed from **1 January of the year being viewed**
+up to the end of the selected period — not blindly from the current calendar year. Only when
+no year is selected does the dashboard fall back to the current calendar year. Selecting a
+fully-past month shows that year's figures up to that month-end, so historical views are
+never silently zero.
+
 ## Limitations by design
 - No bank feeds / NAV APIs — all values are what you record (privacy + offline requirement).
 - Historical net worth depends on recorded valuations; unrecorded points fall back to cost
